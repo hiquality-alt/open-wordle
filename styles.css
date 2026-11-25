@@ -1,0 +1,108 @@
+:root {
+  color-scheme: dark;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #121213;
+  color: #fff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.app {
+  width: min(520px, 100vw);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+}
+
+header {
+  width: 100%;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #3a3a3c;
+}
+
+h1 { margin: 0; font-size: clamp(24px, 7vw, 36px); }
+
+header button {
+  border: 0;
+  border-radius: 6px;
+  background: #818384;
+  color: white;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.board {
+  display: grid;
+  grid-template-rows: repeat(6, 62px);
+  gap: 5px;
+  margin: 32px 0 18px;
+}
+
+.row { display: grid; grid-template-columns: repeat(5, 62px); gap: 5px; }
+
+.tile {
+  width: 62px;
+  height: 62px;
+  border: 2px solid #3a3a3c;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  font-weight: 800;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.tile.filled { border-color: #565758; animation: pop 100ms ease-in-out; }
+.tile.correct { background: #538d4e; border-color: #538d4e; }
+.tile.present { background: #b59f3b; border-color: #b59f3b; }
+.tile.absent { background: #3a3a3c; border-color: #3a3a3c; }
+
+.message {
+  min-height: 24px;
+  margin: 0 0 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.keyboard { width: 100%; margin-top: auto; }
+.keyboard-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 6px; }
+
+.keyboard button {
+  height: 58px;
+  min-width: 43px;
+  border: 0;
+  border-radius: 4px;
+  background: #818384;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.keyboard button.wide { min-width: 65px; }
+.keyboard button.correct { background: #538d4e; }
+.keyboard button.present { background: #b59f3b; }
+.keyboard button.absent { background: #3a3a3c; }
+.spacer { width: 21px; }
+
+@keyframes pop { 50% { transform: scale(1.08); } }
+
+@media (max-height: 700px) {
+  .board { grid-template-rows: repeat(6, 52px); margin: 12px 0; }
+  .row { grid-template-columns: repeat(5, 52px); }
+  .tile { width: 52px; height: 52px; }
+  .keyboard button { height: 48px; }
+}
