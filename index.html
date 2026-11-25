@@ -1,19 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#090a16" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a16">
   <title>Astro's Creator Wordle</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
-
   <main class="app">
     <header>
       <button id="help-button" class="icon-button" type="button" aria-label="How to play">?</button>
@@ -51,7 +45,7 @@
     </section>
   </main>
 
-  <div id="tutorial" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+  <div id="tutorial" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
     <div class="tutorial-card">
       <button id="close-tutorial" class="close-button" type="button" aria-label="Close tutorial">×</button>
       <span class="tutorial-kicker">QUICK START</span>
@@ -59,16 +53,16 @@
       <p>Find the mystery creator name in six tries. Every guess must be a name from the creator roster.</p>
 
       <div class="example">
-        <div class="demo-row"><span class="demo-tile correct">N</span><span class="demo-tile">O</span><span class="demo-tile">X</span></div>
-        <p><b>Green:</b> the correct character in the correct place</p>
+        <div class="demo-row"><span class="demo-tile demo-correct">N</span><span class="demo-tile">O</span><span class="demo-tile">X</span></div>
+        <p><strong>Green:</strong> correct character, correct place</p>
       </div>
       <div class="example">
-        <div class="demo-row"><span class="demo-tile">A</span><span class="demo-tile present">X</span><span class="demo-tile">E</span></div>
-        <p><b>Yellow:</b> it belongs in the name, but somewhere else</p>
+        <div class="demo-row"><span class="demo-tile">A</span><span class="demo-tile demo-present">X</span><span class="demo-tile">E</span></div>
+        <p><strong>Yellow:</strong> character exists, wrong place</p>
       </div>
       <div class="example">
-        <div class="demo-row"><span class="demo-tile">T</span><span class="demo-tile absent">I</span><span class="demo-tile">C</span></div>
-        <p><b>Gray:</b> this character is not in the name</p>
+        <div class="demo-row"><span class="demo-tile">T</span><span class="demo-tile demo-absent">I</span><span class="demo-tile">C</span></div>
+        <p><strong>Gray:</strong> character is not in the name</p>
       </div>
 
       <button id="play-button" class="play-button" type="button">Let's play</button>

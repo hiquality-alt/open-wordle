@@ -14,10 +14,7 @@ const tutorial = document.querySelector("#tutorial");
 const closeTutorial = document.querySelector("#close-tutorial");
 const playButton = document.querySelector("#play-button");
 
-let answer;
-let guesses;
-let currentGuess;
-let gameOver;
+let answer, guesses, currentGuess, gameOver;
 
 function createBoard() {
   board.innerHTML = "";
@@ -41,7 +38,6 @@ function startGame() {
   gameOver = false;
   message.textContent = "";
   createBoard();
-
   keyboard.querySelectorAll("button").forEach(button => {
     button.classList.remove("correct", "present", "absent");
   });
@@ -57,9 +53,6 @@ function renderGuess() {
 
 function showMessage(text) {
   message.textContent = text;
-  message.classList.remove("pop");
-  void message.offsetWidth;
-  message.classList.add("pop");
 }
 
 function evaluateGuess() {
@@ -74,7 +67,6 @@ function evaluateGuess() {
       answerLetters[i] = null;
     }
   }
-
   for (let i = 0; i < submittedGuess.length; i++) {
     if (statuses[i] === "correct") continue;
     const match = answerLetters.indexOf(submittedGuess[i]);
@@ -86,7 +78,7 @@ function evaluateGuess() {
 
   [...row.children].forEach((tile, index) => {
     setTimeout(() => {
-      tile.classList.add("reveal", statuses[index]);
+      tile.classList.add(statuses[index]);
       updateKeyboard(submittedGuess[index], statuses[index]);
     }, index * 130);
   });
@@ -98,12 +90,6 @@ function evaluateGuess() {
     if (submittedGuess === answer) {
       showMessage("You got it! ✨");
       gameOver = true;
-      [...row.children].forEach((tile, index) => {
-        setTimeout(() => tile.animate(
-          [{ transform: "translateY(0)" }, { transform: "translateY(-10px)" }, { transform: "translateY(0)" }],
-          { duration: 280, easing: "ease-out" }
-        ), index * 80);
-      });
     } else if (guesses.length === 6) {
       showMessage(`The creator was ${answer.toLowerCase()}`);
       gameOver = true;
@@ -114,17 +100,17 @@ function evaluateGuess() {
 function updateKeyboard(character, status) {
   const key = keyboard.querySelector(`[data-key="${character}"]`);
   if (!key) return;
-
-  const priority = { absent: 1, present: 2, correct: 3 };
-  const current = ["absent", "present", "correct"].find(name => key.classList.contains(name));
+  const priority = { absent:1, present:2, correct:3 };
+  const current = ["absent","present","correct"].find(name => key.classList.contains(name));
   if (!current || priority[status] > priority[current]) {
-    key.classList.remove("absent", "present", "correct");
+    key.classList.remove("absent","present","correct");
     key.classList.add(status);
   }
 }
 
 function shakeCurrentRow() {
   const row = board.children[guesses.length];
+  if (!row) return;
   row.classList.remove("shake");
   void row.offsetWidth;
   row.classList.add("shake");
@@ -132,7 +118,6 @@ function shakeCurrentRow() {
 
 function handleKey(key) {
   if (gameOver) return;
-
   if (key === "ENTER") {
     if (currentGuess.length !== answer.length) {
       showMessage(`Enter a ${answer.length}-character name`);
@@ -147,7 +132,7 @@ function handleKey(key) {
     message.textContent = "";
     evaluateGuess();
   } else if (key === "BACKSPACE") {
-    currentGuess = currentGuess.slice(0, -1);
+    currentGuess = currentGuess.slice(0,-1);
     message.textContent = "";
     renderGuess();
   } else if (/^[A-Z.]$/.test(key) && currentGuess.length < answer.length) {
@@ -157,9 +142,14 @@ function handleKey(key) {
   }
 }
 
+function openTutorial() {
+  tutorial.classList.remove("hidden");
+  closeTutorial.focus();
+}
+
 function closeTutorialModal() {
   tutorial.classList.add("hidden");
-  try { localStorage.setItem("creatorWordleTutorialSeen", "true"); } catch (_) {}
+  helpButton.focus();
 }
 
 keyboard.addEventListener("click", event => {
@@ -168,26 +158,19 @@ keyboard.addEventListener("click", event => {
 });
 
 document.addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    handleKey("ENTER");
-  } else if (event.key === "Backspace") {
-    handleKey("BACKSPACE");
-  } else if (/^[a-z.]$/i.test(event.key)) {
-    handleKey(event.key.toUpperCase());
-  }
+  if (event.key === "Enter") handleKey("ENTER");
+  else if (event.key === "Backspace") handleKey("BACKSPACE");
+  else if (/^[a-z.]$/i.test(event.key)) handleKey(event.key.toUpperCase());
+
+  if (event.key === "Escape" && !tutorial.classList.contains("hidden")) closeTutorialModal();
 });
 
 newGameButton.addEventListener("click", startGame);
-helpButton.addEventListener("click", () => tutorial.classList.remove("hidden"));
+helpButton.addEventListener("click", openTutorial);
 closeTutorial.addEventListener("click", closeTutorialModal);
 playButton.addEventListener("click", closeTutorialModal);
 tutorial.addEventListener("click", event => {
   if (event.target === tutorial) closeTutorialModal();
 });
-
-let tutorialSeen = false;
-try { tutorialSeen = localStorage.getItem("creatorWordleTutorialSeen") === "true"; } catch (_) {}
-if (!tutorialSeen) tutorial.classList.remove("hidden");
 
 startGame();
