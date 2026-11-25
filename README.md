@@ -1,6 +1,6 @@
 # Astro's Creator Wordle
 
-A small, dependency-free browser guessing game featuring Astro's creator roster.
+A polished, dependency-light browser guessing game featuring Astro's creator roster.
 
 ## Play locally
 
@@ -14,17 +14,27 @@ Then visit `http://localhost:8000`.
 
 ## How to play
 
-Guess the mystery creator in six tries. Each guess must be one of the names in the roster. A period in `j.j.max` counts as a character.
+Guess the mystery creator in six tries. Every guess must be a name from the roster. A period in `j.j.max` counts as a character.
 
-- **Green**: character is correct and in the right position
-- **Yellow**: character is in the creator's name, but in another position
-- **Gray**: character is not in the creator's name
+- **Green:** correct character, correct position
+- **Yellow:** character belongs in the name, wrong position
+- **Gray:** character is not in the name
 
-Use the on-screen keyboard or your physical keyboard. Press Enter to submit and Backspace to erase. Select **New game** for another mystery creator.
+The first visit includes a short tutorial. It can be reopened with the `?` button. Use the on-screen or physical keyboard. Press Enter to submit and Backspace to erase.
 
-## Creator roster
+## Add or remove creators
 
-hiquality, pikaapi, toxic, j.j.max, nazmul, simpy, korynn, mimoko, djam, lilsnapes, nox, cardsharkman, erika, belittle, axel, sturmjager, theramblerman, blackwidowink, stargazer, angelclaw, vibecreai.
+Open `game.js` and edit the `CREATORS` array near the top:
+
+```javascript
+const CREATORS = [
+  "hiquality",
+  "pikaapi",
+  "your-new-creator"
+];
+```
+
+Keep names in lowercase. Only letters and periods are accepted, and the game automatically adapts the board to the selected name's length.
 
 ## License
 

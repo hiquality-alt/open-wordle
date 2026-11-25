@@ -9,6 +9,10 @@ const board = document.querySelector("#board");
 const keyboard = document.querySelector("#keyboard");
 const message = document.querySelector("#message");
 const newGameButton = document.querySelector("#new-game");
+const helpButton = document.querySelector("#help-button");
+const tutorial = document.querySelector("#tutorial");
+const closeTutorial = document.querySelector("#close-tutorial");
+const playButton = document.querySelector("#play-button");
 
 let answer;
 let guesses;
@@ -51,13 +55,19 @@ function renderGuess() {
   });
 }
 
+function showMessage(text) {
+  message.textContent = text;
+  message.classList.remove("pop");
+  void message.offsetWidth;
+  message.classList.add("pop");
+}
+
 function evaluateGuess() {
   const submittedGuess = currentGuess;
   const row = board.children[guesses.length];
   const answerLetters = answer.split("");
   const statuses = Array(submittedGuess.length).fill("absent");
 
-  // Match exact positions first so duplicate letters are scored correctly.
   for (let i = 0; i < submittedGuess.length; i++) {
     if (submittedGuess[i] === answer[i]) {
       statuses[i] = "correct";
@@ -75,8 +85,10 @@ function evaluateGuess() {
   }
 
   [...row.children].forEach((tile, index) => {
-    setTimeout(() => tile.classList.add(statuses[index]), index * 90);
-    updateKeyboard(submittedGuess[index], statuses[index]);
+    setTimeout(() => {
+      tile.classList.add("reveal", statuses[index]);
+      updateKeyboard(submittedGuess[index], statuses[index]);
+    }, index * 130);
   });
 
   guesses.push(submittedGuess);
@@ -84,13 +96,19 @@ function evaluateGuess() {
 
   setTimeout(() => {
     if (submittedGuess === answer) {
-      message.textContent = "You got it!";
+      showMessage("You got it! ✨");
       gameOver = true;
+      [...row.children].forEach((tile, index) => {
+        setTimeout(() => tile.animate(
+          [{ transform: "translateY(0)" }, { transform: "translateY(-10px)" }, { transform: "translateY(0)" }],
+          { duration: 280, easing: "ease-out" }
+        ), index * 80);
+      });
     } else if (guesses.length === 6) {
-      message.textContent = `The creator was ${answer.toLowerCase()}.`;
+      showMessage(`The creator was ${answer.toLowerCase()}`);
       gameOver = true;
     }
-  }, answer.length * 90 + 150);
+  }, submittedGuess.length * 130 + 420);
 }
 
 function updateKeyboard(character, status) {
@@ -105,16 +123,25 @@ function updateKeyboard(character, status) {
   }
 }
 
+function shakeCurrentRow() {
+  const row = board.children[guesses.length];
+  row.classList.remove("shake");
+  void row.offsetWidth;
+  row.classList.add("shake");
+}
+
 function handleKey(key) {
   if (gameOver) return;
 
   if (key === "ENTER") {
     if (currentGuess.length !== answer.length) {
-      message.textContent = `Enter a ${answer.length}-character name.`;
+      showMessage(`Enter a ${answer.length}-character name`);
+      shakeCurrentRow();
       return;
     }
     if (!CREATORS.includes(currentGuess.toLowerCase())) {
-      message.textContent = "That name isn't in the creator roster.";
+      showMessage("That name isn't in the creator roster");
+      shakeCurrentRow();
       return;
     }
     message.textContent = "";
@@ -128,6 +155,11 @@ function handleKey(key) {
     message.textContent = "";
     renderGuess();
   }
+}
+
+function closeTutorialModal() {
+  tutorial.classList.add("hidden");
+  try { localStorage.setItem("creatorWordleTutorialSeen", "true"); } catch (_) {}
 }
 
 keyboard.addEventListener("click", event => {
@@ -147,4 +179,15 @@ document.addEventListener("keydown", event => {
 });
 
 newGameButton.addEventListener("click", startGame);
+helpButton.addEventListener("click", () => tutorial.classList.remove("hidden"));
+closeTutorial.addEventListener("click", closeTutorialModal);
+playButton.addEventListener("click", closeTutorialModal);
+tutorial.addEventListener("click", event => {
+  if (event.target === tutorial) closeTutorialModal();
+});
+
+let tutorialSeen = false;
+try { tutorialSeen = localStorage.getItem("creatorWordleTutorialSeen") === "true"; } catch (_) {}
+if (!tutorialSeen) tutorial.classList.remove("hidden");
+
 startGame();
